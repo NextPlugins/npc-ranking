@@ -6,12 +6,14 @@ import com.github.juliarn.npc.event.PlayerNPCShowEvent;
 import com.github.juliarn.npc.modifier.MetadataModifier;
 import com.github.juliarn.npc.profile.Profile;
 import com.nextplugins.libs.hologramwrapper.HologramController;
+import com.nextplugins.libs.hologramwrapper.utils.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -56,7 +58,7 @@ public class Ranking implements Listener {
         return hologramController;
     }
 
-    public <T> void update(List<T> content, Function<T, String> function) {
+    public <T> void update(List<T> content, Function<T, String> function, Function<T, List<String>> misc) {
         destroy();
 
         for (int index = 0; index < content.size(); index++) {
@@ -72,6 +74,8 @@ public class Ranking implements Listener {
                     line -> line.replace("{position}", String.valueOf(position))
                                 .replace("{name}", name)
             ).collect(Collectors.toList());
+
+            format.addAll(misc.apply(item));
 
             if (location == null) continue;
             // if (!location.isWorldLoaded()) continue;
@@ -93,6 +97,10 @@ public class Ranking implements Listener {
 
             hologramController.create(location.clone().add(0.5, (2 + (format.size() * 0.25)), 0.5), format);
         }
+    }
+
+    public <T> void update(List<T> content, Function<T, String> function) {
+        update(content, function, ($) -> new ArrayList<>());
     }
 
     public void destroy() {

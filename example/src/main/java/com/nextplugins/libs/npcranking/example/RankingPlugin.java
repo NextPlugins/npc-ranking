@@ -14,10 +14,10 @@ public final class RankingPlugin extends JavaPlugin {
 
     static {
         accounts = new ArrayList<>() {{
-            add(new Account("Eike", 10D));
-            add(new Account("Yuhtin", 9D));
-            add(new Account("Gabriel", 8D));
-            add(new Account("Henry", 7D));
+            add(new Account("Eike", 10_000));
+            add(new Account("Yuhtin", 9_000));
+            add(new Account("Gabriel", 8_000));
+            add(new Account("Henry", 7_000));
         }};
     }
 
@@ -27,10 +27,7 @@ public final class RankingPlugin extends JavaPlugin {
     public void onEnable() {
         getDataFolder().mkdirs();
 
-        this.ranking = new Ranking(this, Arrays.asList(
-                "&a{position}º",
-                "&f{name}"
-        ));
+        this.ranking = new Ranking(this, Arrays.asList("&a{position}º", "&f{name}"));
 
         getCommand("pos").setExecutor(new RankingPositionCommand(ranking.getRankingPosition()));
         Bukkit.getScheduler().runTaskTimer(this, new RankingRunnable(ranking, accounts), 20, 20 * 30);
