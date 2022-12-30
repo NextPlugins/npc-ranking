@@ -1,2 +1,4 @@
 rootProject.name = 'npc-ranking'
+include 'core'
+include 'example'
 

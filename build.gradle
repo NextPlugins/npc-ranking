@@ -1,19 +1,21 @@
-plugins {
-    id 'java'
-}
+allprojects {
+    apply plugin: 'java'
 
-group 'com.nextplugins'
-version '1.0-SNAPSHOT'
+    group 'com.nextplugins'
+    version '1.0.0'
 
-repositories {
-    mavenCentral()
-}
+    repositories {
+        mavenCentral()
+        maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+        maven { url = 'https://oss.sonatype.org/content/groups/public/' }
+        maven { url = 'https://jitpack.io' }
+    }
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
+    dependencies {
+        compileOnly 'org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT'
+    }
 
-test {
-    useJUnitPlatform()
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 }
