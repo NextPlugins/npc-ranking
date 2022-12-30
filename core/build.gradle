@@ -1,0 +1,9 @@
+repositories {
+    maven { url = 'https://jitpack.io' }
+}
+
+
+dependencies {
+    implementation 'com.github.juliarn:npc-lib:2.6-RELEASE'
+    implementation 'com.github.nextplugins.hologram-wrapper:core:master-SNAPSHOT'
+}
