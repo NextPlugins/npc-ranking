@@ -1,17 +1,17 @@
 package com.nextplugins.libs.npcranking.example;
 
-import com.nextplugins.libs.npcranking.RankingPosition;
+import com.nextplugins.libs.npcranking.RankLocations;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RankingPositionCommand implements CommandExecutor {
+public class NpcLocationCommand implements CommandExecutor {
 
-    private final RankingPosition position;
+    private final RankLocations locations;
 
-    public RankingPositionCommand(RankingPosition position) {
-        this.position = position;
+    public NpcLocationCommand(RankLocations locations) {
+        this.locations = locations;
     }
 
     @Override
@@ -21,22 +21,22 @@ public class RankingPositionCommand implements CommandExecutor {
         final Player player = (Player) sender;
 
         if (args.length == 0) {
-            player.sendMessage("Usage: /pos [1, 2, 3, ...]");
+            player.sendMessage("Usage: /npcposition [1, 2, 3, ...]");
 
             return false;
         }
 
-        final int pos;
+        final int position;
 
         try {
-            pos = Integer.parseInt(args[0]);
+            position = Integer.parseInt(args[0]);
         } catch (NumberFormatException exception) {
             player.sendMessage("Position must be a number!");
 
             return false;
         }
 
-        position.setPosition(pos - 1, player.getLocation());
+        locations.setLocation(position, player.getLocation());
 
         return false;
     }

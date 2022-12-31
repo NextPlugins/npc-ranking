@@ -1,6 +1,6 @@
 name: RankingPlugin
 version: 1.0.0
-main: com.nextplugins.libs.npcranking.example.RankingPlugin
+main: com.nextplugins.libs.npcranking.example.RankPlugin
 author: eikefab
 depend:
   - ProtocolLib
@@ -8,5 +8,5 @@ softdepend:
   - HolographicDisplays
   - DecentHolograms
 commands:
-  pos:
+  npcposition:
     description: "Save NPC position for further usage."

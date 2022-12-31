@@ -1,17 +1,8 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'java-library'
 }
 
 dependencies {
-    implementation 'com.github.juliarn:npc-lib:2.6-RELEASE'
-    implementation 'com.github.nextplugins.hologram-wrapper:core:master-SNAPSHOT'
-}
-
-build {
-    dependsOn {
-        shadowJar {
-            relocate 'com.github.juliarn.npclib', 'com.nextplugins.libs.npcranking.ext.juliarn.npclib'
-            relocate 'com.nextplugins.libs.hologramwrapper', 'com.nextplugins.libs.npcranking.ext.nextplugins.hologramwrapper'
-        }
-    }
+    api 'com.github.juliarn:npc-lib:2.6-RELEASE'
+    api 'com.github.nextplugins.hologram-wrapper:core:master-SNAPSHOT'
 }

@@ -9,20 +9,20 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.util.*;
 
-public class RankingPosition {
+public class RankLocations {
 
     private final Plugin plugin;
     private final File file;
     private final FileConfiguration configuration;
 
-    public RankingPosition(Plugin plugin) {
+    public RankLocations(Plugin plugin) {
         this.plugin = plugin;
         this.file = Objects.requireNonNull(createFile());
         this.configuration = getAsConfiguration();
     }
 
     private File createFile() {
-        final File file = new File(plugin.getDataFolder(), "ranking-positions.yml");
+        final File file = new File(plugin.getDataFolder(), "ranking-location.yml");
 
         try {
             file.createNewFile();
@@ -57,14 +57,16 @@ public class RankingPosition {
         }
     }
 
-    public void setPosition(int index, Location location) {
-        final List<String> positions = configuration.getStringList("available");
+    public void setLocation(int position, Location location) {
+        final List<String> locations = configuration.getStringList("available");
+
+        final int index = position <= 0 ? position : position - 1;
         final String data = LocationSerializer.to(location);
 
-        if (index > positions.size() - 1) positions.add(data);
-        else positions.set(index, data);
+        if (index > locations.size() - 1) locations.add(data);
+        else locations.set(index, data);
 
-        configuration.set("available", positions);
+        configuration.set("available", locations);
 
         try {
             configuration.save(file);
@@ -73,14 +75,18 @@ public class RankingPosition {
         }
     }
 
-    public Map<Integer, Location> getPositions() {
+    public Location getLocation(int position) {
+        return getLocations().getOrDefault((position - 1), null);
+    }
+
+    public Map<Integer, Location> getLocations() {
         final Map<Integer, Location> positions = new LinkedHashMap<>();
         final List<String> available = configuration.getStringList("available");
 
         for (int index = 0; index < available.size(); index++) {
-            final String position = available.get(index);
+            final String location = available.get(index);
 
-            positions.put(index, LocationSerializer.from(position));
+            positions.put(index, LocationSerializer.from(location));
         }
 
         return positions;

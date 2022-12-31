@@ -1,6 +1,10 @@
 package com.nextplugins.libs.npcranking.example;
 
+import java.text.DecimalFormat;
+
 public class Account {
+
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.###");
 
     private final String name;
     private final double balance;
@@ -16,6 +20,10 @@ public class Account {
 
     public double getBalance() {
         return balance;
+    }
+
+    public String getBalanceFormatted() {
+        return DECIMAL_FORMAT.format(getBalance());
     }
 
 }

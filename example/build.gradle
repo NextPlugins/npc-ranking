@@ -1,16 +1,18 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'java-library'
 }
 
 dependencies {
-    api project(':core')
+    implementation project(':core')
 }
 
 build {
     dependsOn {
         shadowJar {
             archiveName('NPCRanking.jar')
+
+            relocate 'com.github.juliarn.npclib', 'com.nextplugins.libs.npcranking.ext.juliarn.npclib'
+            relocate 'com.nextplugins.libs.hologramwrapper', 'com.nextplugins.libs.npcranking.ext.nextplugins.hologramwrapper'
         }
     }
 }
