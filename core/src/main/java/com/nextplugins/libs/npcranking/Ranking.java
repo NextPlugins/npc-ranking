@@ -9,14 +9,16 @@ import com.nextplugins.libs.hologramwrapper.HologramController;
 import com.nextplugins.libs.hologramwrapper.utils.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ public class Ranking implements Listener {
     private final RankingPosition rankingPosition;
     private final HologramController hologramController;
     private final List<String> format;
+    private final Random random;
 
     public Ranking(Plugin plugin, NPCPool pool, List<String> format) {
         this.plugin = plugin;
@@ -34,6 +37,7 @@ public class Ranking implements Listener {
         this.rankingPosition = new RankingPosition(plugin);
         this.hologramController = Objects.requireNonNull(HologramController.get(plugin));
         this.format = format;
+        this.random = new Random();
 
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -81,21 +85,17 @@ public class Ranking implements Listener {
             // if (!location.isWorldLoaded()) continue;
 
             final Profile profile = new Profile(name);
-            profile.setName("")
-                    .setUniqueId(UUID.randomUUID())
-                    .complete();
+            profile.complete();
 
-            final NPC npc = NPC.builder()
+            profile.setName("").setUniqueId(new UUID(random.nextLong(), 0));
+
+            NPC.builder()
                     .location(location.clone().add(0.5, 0, 0.5))
                     .imitatePlayer(false)
                     .profile(profile)
                     .build(pool);
 
-            npc.metadata()
-               .queue(MetadataModifier.EntityMetadata.SKIN_LAYERS, true)
-               .send(npc.getSeeingPlayers());
-
-            hologramController.create(location.clone().add(0.5, (2 + (format.size() * 0.25)), 0.5), format);
+            hologramController.create(location.clone().add(0.5, (2 + (format.size() * 0.3)), 0.5), format);
         }
     }
 
@@ -115,6 +115,19 @@ public class Ranking implements Listener {
         if (!pool.getNPCs().contains(npc)) return;
 
         event.send(npc.metadata().queue(MetadataModifier.EntityMetadata.SKIN_LAYERS, true));
+        // hideNpcName(event.getPlayer(), npc);
+    }
+
+    private void hideNpcName(Player player, NPC npc) {
+        final Scoreboard scoreboard = player.getScoreboard();
+        final String teamName = ("NPCRanking-" + player.getName()).substring(0, 16);
+
+        Team team = scoreboard.getTeam(teamName);
+
+        if (team == null) team = scoreboard.registerNewTeam(teamName);
+
+        team.addEntry(npc.getProfile().getName());
+        team.setNameTagVisibility(NameTagVisibility.NEVER);
     }
 
 }
