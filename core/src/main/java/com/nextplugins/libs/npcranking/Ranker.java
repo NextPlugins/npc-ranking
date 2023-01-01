@@ -10,6 +10,11 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
+/**
+ * The class with the responsibility to handle the NPC ranking
+ *
+ * @param <T> the item to use on ranking
+ */
 public class Ranker<T> {
 
     private final RankFormat<T> format;
@@ -17,6 +22,11 @@ public class Ranker<T> {
     private final Holograms holograms;
     private final NPCPool npcPool;
 
+    /**
+     * @param format the rank format
+     * @param npcPool the npc pool
+     * @param plugin the plugin
+     */
     public Ranker(RankFormat<T> format, NPCPool npcPool, Plugin plugin) {
         this.format = format;
         this.locations = new RankLocations(plugin);
@@ -26,6 +36,12 @@ public class Ranker<T> {
         Bukkit.getPluginManager().registerEvents(new RankListener(), plugin);
     }
 
+    /**
+     * Creates a Ranker instance using default NPCPool to plugin
+     *
+     * @param format the rank format
+     * @param plugin the plugin
+     */
     public Ranker(RankFormat<T> format, Plugin plugin) {
         this(format, NPCPool.createDefault(plugin), plugin);
     }
@@ -46,6 +62,11 @@ public class Ranker<T> {
         return npcPool;
     }
 
+    /**
+     * Updates the NPCs, clearing it all and then respawning everything
+     *
+     * @param content the item list to use
+     */
     public void update(List<T> content) {
         if (holograms == null) return;
 
@@ -56,8 +77,7 @@ public class Ranker<T> {
 
             final int position = index + 1;
 
-            final Location location = locations.getLocation((index + 1));
-
+            final Location location = locations.getLocation(position);
             if (location == null) return;
 
             NPC.builder()
@@ -73,6 +93,9 @@ public class Ranker<T> {
         }
     }
 
+    /**
+     * Clear holograms and NPCs used in the process
+     */
     public void clear() {
         if (holograms != null) holograms.clear();
 

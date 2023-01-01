@@ -5,6 +5,9 @@ import com.github.juliarn.npc.modifier.MetadataModifier;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+/**
+ * Internal listener to fix skin layers issue
+ */
 final class RankListener implements Listener {
 
     @EventHandler

@@ -8,13 +8,22 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
+/**
+ * Class that handle NPC locations, saving it all to 'ranking-location.yml' file
+ */
 public class RankLocations {
 
     private final Plugin plugin;
     private final File file;
     private final FileConfiguration configuration;
 
+    /**
+     * Creates default configuration
+     *
+     * @param plugin the plugin
+     */
     public RankLocations(Plugin plugin) {
         this.plugin = plugin;
         this.file = Objects.requireNonNull(createFile());
@@ -47,25 +56,12 @@ public class RankLocations {
         return YamlConfiguration.loadConfiguration(file);
     }
 
-    public void setPositions(List<String> stringList) {
-        configuration.set("available", stringList);
-
-        try {
-            configuration.save(file);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    public void setLocation(int position, Location location) {
-        final List<String> locations = configuration.getStringList("available");
-
-        final int index = position <= 0 ? position : position - 1;
-        final String data = LocationSerializer.to(location);
-
-        if (index > locations.size() - 1) locations.add(data);
-        else locations.set(index, data);
-
+    /**
+     * Update all positions available within the list
+     *
+     * @param locations the location list
+     */
+    public void setPositions(List<String> locations) {
         configuration.set("available", locations);
 
         try {
@@ -75,10 +71,50 @@ public class RankLocations {
         }
     }
 
+    /**
+     * Set all positions available within the list
+     *
+     * @param locations the location list
+     */
+    public void savePositions(List<Location> locations) {
+        setPositions(locations.stream().map(LocationSerializer::to).collect(Collectors.toList()));
+    }
+
+    /**
+     * Save position location to list
+     * if position is less than 0, it would be 0
+     * else, would be saved as position - 1
+     *
+     * @param position the position
+     * @param location the location
+     */
+    public void setLocation(int position, Location location) {
+        final List<String> locations = configuration.getStringList("available");
+
+        final int index = position <= 0 ? 0 : position - 1;
+        final String data = LocationSerializer.to(location);
+
+        if (index > locations.size() - 1) locations.add(data);
+        else locations.set(index, data);
+
+        setPositions(locations);
+    }
+
+    /**
+     * Gets the position location
+     *
+     * @param position the position
+     * @return the position location or null if there's none
+     */
     public Location getLocation(int position) {
         return getLocations().getOrDefault((position - 1), null);
     }
 
+    /**
+     * Gets all available locations at the moment
+     *
+     * @return the locations
+     */
     public Map<Integer, Location> getLocations() {
         final Map<Integer, Location> positions = new LinkedHashMap<>();
         final List<String> available = configuration.getStringList("available");
